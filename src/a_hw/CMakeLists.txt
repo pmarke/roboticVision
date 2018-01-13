@@ -13,6 +13,14 @@ find_package(catkin REQUIRED COMPONENTS
 
 find_package(OpenCV REQUIRED)
 
+include(FindPortaudio.txt)
+# find_package(PortAudio)
+
+
+# message("Port Audio Found: " ${PORTAUDIO_FOUND})
+
+
+
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -91,11 +99,31 @@ catkin_package(
 ## Build ##
 ###########
 
+# get_filename_component(PARENT_DIR ${PROJECT_BINARY_DIR} DIRECTORY)
+
+# find_library(PORTAUDIO_LIBRARY 
+# 	NAMES
+# 		portaudio
+# 	PATHS
+# 		${PARENT_DIR}/portaudio)
+
+# find_path(PORTAUDIO_INCLUDE_DIR
+# 	NAMES
+# 		portaudio.h
+# 	PATHS
+# 		${CMAKE_SOURCE_DIR}/portaudio/include)
+
+# message("PORTAUDIO_LIBRARY: " ${PORTAUDIO_LIBRARY})
+# message("PORTAUDIO_INCLUDE_DIR: " ${PORTAUDIO_INCLUDE_DIR})
+# message("Path: " ${CMAKE_SOURCE_DIR}/portaudio/include )
+
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
   ${catkin_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
+  ${PORTAUDIO_INCLUDE_DIRS}
+  ${CMAKE_SOURCE_DIR}/portaudio/qa/loopback/src
   include
 )
 
@@ -104,14 +132,21 @@ include_directories(
 #   src/${PROJECT_NAME}/a_hw.cpp
 # )
 
+set(WRITE_WAVE_PATH ${CMAKE_SOURCE_DIR}/portaudio/qa/loopback/src)
+
+add_library(libaudioRecorder include/audioRecorder.h src/audioRecorder.cpp ${WRITE_WAVE_PATH}/write_wav.h ${WRITE_WAVE_PATH}/write_wav.c )
+
+
+
+
+
 add_library(libscreenShot include/screenShot.h src/screenShot.cpp)
 
 target_link_libraries(libscreenShot X11)
 
-
 add_executable(main_node src/main.cpp )
 
-target_link_libraries(main_node ${OpenCV_LIBRARIES} libscreenShot)
+target_link_libraries(main_node ${OpenCV_LIBRARIES} libscreenShot libaudioRecorder)
 
 
 
@@ -119,7 +154,7 @@ target_link_libraries(main_node ${OpenCV_LIBRARIES} libscreenShot)
 ## Testing ##
 #############
 
-## Add gtest based cpp test target and link libraries
+## Add gtest based cpp test target and link PORTAUDIO_LIBRARIESlibraries
 # catkin_add_gtest(${PROJECT_NAME}-test test/test_a_hw.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})

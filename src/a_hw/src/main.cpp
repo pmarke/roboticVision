@@ -47,6 +47,8 @@ else{
 	screen.getImage(img);
 	// cap.grab();
 }
+	// printf("window height %i \n", img.rows);
+	// printf("window width %i \n", img.cols);
 cv::imshow("img",img);
 key = cv::waitKey(30);
 if(key == KEY_Q){
