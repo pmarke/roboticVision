@@ -33,8 +33,8 @@ private:
 											PaTime         defaultHighInputLatency,
 											PaTime         defaultHighOutputLatency,
 											double         defaultSampleRate*/
-	bool _streamOpen;       // keeps track if the stream is open
-	bool _flagDevice;       // keeps track if a valid device was found.
+	bool _streamOpen = false;       // keeps track if the stream is open
+	bool _flagDevice = false;       // keeps track if a valid device was found.
 	char _fileName[1024];   // file name of wav file
 
 	// holds the number of channels of the recording device and 

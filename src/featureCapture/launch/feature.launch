@@ -1,0 +1,5 @@
+<launch>
+
+	<node pkg = "feature_capture" type="feature_node" name="feature_node" required="true" output = "screen" />
+
+</launch>

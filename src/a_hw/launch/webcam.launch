@@ -1,5 +1,5 @@
 <launch>
 
-	<node pkg = "a_hw" type="main_node" name="main_node" required="true" output = "screen"/>
+	<node pkg = "a_hw" type="main_node" name="main_node" required="true" output = "screen" args="/home/mark/Downloads/audio.wav /home/mark/Downloads/video.avi"/>
 
 </launch>

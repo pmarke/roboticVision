@@ -16,7 +16,8 @@ static int MyPaStreamCallback(const void *inputBuffer, void *outputBuffer,
 }
 
 AudioRecorder::AudioRecorder(std::string fileName = "recorded.wav",int numChannels = 10){
-	Pa_Initialize();                                      // init port audio
+	(void) Pa_Initialize();                                      // init port audio
+	printf("\n");
 	PaError _err = paNoError;                             // keeps track of port audio errors
 	strcpy(_fileName, fileName.c_str());                  // copy filename into char
 	_inputParameters.device = Pa_GetDefaultInputDevice(); // get default device
@@ -31,7 +32,7 @@ AudioRecorder::AudioRecorder(std::string fileName = "recorded.wav",int numChanne
 		_flagDevice = true;
 		// get device information
 		_deviceInfo = Pa_GetDeviceInfo(_inputParameters.device);
-		printf("Defualt Input Device found %s\n",_deviceInfo->name);
+		printf("Defualt Audio Input Device found %s\n",_deviceInfo->name);
 
 		// ensure number of channels is supported. If not, use max number of channels
 		if(numChannels > _deviceInfo->maxInputChannels){
@@ -49,7 +50,7 @@ AudioRecorder::AudioRecorder(std::string fileName = "recorded.wav",int numChanne
 		_inputParameters.hostApiSpecificStreamInfo = NULL;
 		_inputParameters.sampleFormat = paInt16;
 
-		printf("Device Sample Rate %f\n",_deviceInfo->defaultSampleRate);
+		printf("Audio Device Sample Rate %f\n",_deviceInfo->defaultSampleRate);
 
 		
 		// open audio stream
@@ -72,16 +73,20 @@ AudioRecorder::AudioRecorder(std::string fileName = "recorded.wav",int numChanne
 
 
 void AudioRecorder::stopStream(){
-	if(_streamOpen == true && _flagDevice){
+	if(_streamOpen == true){
 		Pa_StopStream(_stream);
 		_streamOpen = false;
 	}	
 }
 
 void AudioRecorder::startStream(){
+	printf("here\n");
+	printf("stream open %i\n", _streamOpen);
+	printf("flag deice %i\n", _flagDevice);
 	if(_streamOpen == false && _flagDevice){
 		Pa_StartStream(_stream);
 		_streamOpen = true;
+		printf("starting stream \n");
 	}
 }
 
@@ -110,10 +115,11 @@ void AudioRecorder::writeToFile(){
 
 		// Open file and create header
 		temp = Audio_WAV_OpenWriter(&wavWriter, _fileName, _deviceInfo->defaultSampleRate,_data.numChannels);
-		printf("Open Writer %ld\n", temp);
+		printf("Audio Header: %ld\n", temp);
 		// write data to file
 		temp = Audio_WAV_WriteShorts(&wavWriter, test, _data.recordedSamples.size());
-		printf("Open Writer %ld\n", temp);
+		printf("%i\n", (int)_data.recordedSamples.size());
+		printf("Audio File Size: %ld\n", temp);
 		// close file
 		temp = Audio_WAV_CloseWriter(&wavWriter);
 	}
@@ -140,7 +146,7 @@ int AudioRecorder::recordCallback(const void *inputBuffer, void *outputBuffer,
 	std::vector<int16_t>* samples = &data->recordedSamples;
 	const int16_t *rptr = (const int16_t*) inputBuffer;
 	
-		
+	printf("callback\n");
 
 	(void) outputBuffer; /*Prevent unused variable warnings */
 	(void) timeInfo;

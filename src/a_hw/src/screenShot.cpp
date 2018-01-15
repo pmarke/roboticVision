@@ -107,14 +107,16 @@ ScreenShot::~ScreenShot(){
 
 void ScreenShot::printAttributes(){
 
-	printf("Printing ScreenShot attributes.\n");
+
+	printf("#######Printing ScreenShot attributes.########\n\n");
 	printf("fps: %i\n", (int)_screenfps);
 	printf("Max Screen Width (pixel) %i\n", _screenWidth);
 	printf("Max Screen Height (pixel) %i\n", _screenHeight);
 	printf("Start x pos of screen to grab (pixel): %i\n",_x);
 	printf("Start y pos of screen to grab (pixel): %i\n",_y);
 	printf("ROI width (pixel): %i\n",_width);
-	printf("ROI height(pixel): %i\n",_height);
+	printf("ROI height(pixel): %i\n\n",_height);
+	printf("##############################################\n\n");
 
 }
 

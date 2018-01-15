@@ -4,6 +4,19 @@
 #include <screenShot.h>
 #include <audioRecorder.h>
 #include <opencv2/videoio.hpp>  // Video write
+#include <stdio.h>
+#include <string.h>
+
+// #define WINDOWS  /* uncomment this line to use it for windows.*/ 
+#ifdef WINDOWS
+#include <direct.h>
+#define GetCurrentDir _getcwd
+#else
+#include <unistd.h>
+#define GetCurrentDir getcwd
+#endif
+#include<iostream>
+ 
 
 
 
@@ -11,7 +24,54 @@
 #define KEY_S 115
 
 
-int main(int, char**){
+std::string GetCurrentWorkingDir( void ) {
+  char buff[FILENAME_MAX];
+  GetCurrentDir( buff, FILENAME_MAX );
+  std::string current_working_dir(buff);
+  return current_working_dir;
+}
+
+void instructions(char * audioFileName, char * videoFileName)
+{
+	// printf("\n########################################################\n");
+	printf("\n################### Instructions #######################\n\n");
+	// printf("########################################################\n\n");
+	printf("Press \'s\' to switch between camera and screen.\n");
+	printf("Press \'q\' to end program. \n");
+	printf("In the folder that contains your audio and video file. Use the following command to merge them.\n");
+	printf("ffmpeg -i %s -i %s -codec copy -shortest output.avi\n\n",videoFileName,audioFileName);
+	printf("########################################################\n\n");
+
+	printf("audio file path: %s\n", audioFileName);
+	printf("video file path: %s\n\n", audioFileName);
+}
+
+
+int main(int argc, char* argv[]){
+
+	char audioFileName[1000];
+	char videoFileName[1000];
+
+
+if(argc > 3)
+{
+	strcpy(audioFileName,argv[1]);
+	strcpy(videoFileName,argv[2]);
+
+}
+else{
+	printf("Audio and video file paths/names not given. Using default names.\n");
+	std::string path = GetCurrentWorkingDir();
+
+	std::string audioFilePath = path+="/audio.wav";
+	std::string videoFilePath = path+="/video.avi";
+
+	strcpy(audioFileName,audioFilePath.c_str());
+	strcpy(videoFileName,videoFilePath.c_str());
+}
+
+	instructions(audioFileName,videoFileName);
+
 
 	ScreenShot screen;
 	cv::Mat img;
@@ -20,7 +80,7 @@ int main(int, char**){
 	int codec;
 	cv::Size S;
 
-	AudioRecorder audioRecorder("/home/mark/Downloads/test.wav", 1);
+	AudioRecorder audioRecorder(audioFileName, 1);
 
 
 
@@ -44,10 +104,10 @@ int main(int, char**){
 
 		S = cv::Size((int) cap.get(cv::CAP_PROP_FRAME_WIDTH), (int) cap.get(cv::CAP_PROP_FRAME_HEIGHT));
 
-		videoWriter.open("/home/mark/Downloads/test.avi", codec, cap.get(cv::CAP_PROP_FPS),cv::Size(1920,1080),true);
+		videoWriter.open(videoFileName, codec, cap.get(cv::CAP_PROP_FPS),cv::Size(1920,1080),true);
 
 		printf("VideoWriter Opened: %i \n", videoWriter.isOpened());
-		printf("fps: %f \n",cap.get(cv::CAP_PROP_FPS) );
+		printf("camera fps: %f \n",cap.get(cv::CAP_PROP_FPS) );
 
 		printf("camera width: %i \n", (int) cap.get(cv::CAP_PROP_FRAME_WIDTH));
 		printf("camera height: %i \n", (int) cap.get(cv::CAP_PROP_FRAME_HEIGHT));
