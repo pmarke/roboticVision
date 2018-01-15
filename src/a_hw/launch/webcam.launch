@@ -1,0 +1,5 @@
+<launch>
+
+	<node pkg = "a_hw" type="main_node" name="main_node" required="true" output = "screen"/>
+
+</launch>

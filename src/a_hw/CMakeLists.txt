@@ -95,6 +95,15 @@ catkin_package(
 #  DEPENDS system_lib
 )
 
+
+
+#####################################
+#            Definitions
+#####################################
+add_definitions(-DDEBUG=TRUE)
+
+
+
 ###########
 ## Build ##
 ###########
@@ -136,13 +145,15 @@ set(WRITE_WAVE_PATH ${CMAKE_SOURCE_DIR}/portaudio/qa/loopback/src)
 
 add_library(libaudioRecorder include/audioRecorder.h src/audioRecorder.cpp ${WRITE_WAVE_PATH}/write_wav.h ${WRITE_WAVE_PATH}/write_wav.c )
 
+target_link_libraries(libaudioRecorder ${PORTAUDIO_LIBRARIES})
+
 
 
 
 
 add_library(libscreenShot include/screenShot.h src/screenShot.cpp)
 
-target_link_libraries(libscreenShot X11)
+target_link_libraries(libscreenShot X11 Xrandr)
 
 add_executable(main_node src/main.cpp )
 

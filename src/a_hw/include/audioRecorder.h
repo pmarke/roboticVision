@@ -1,3 +1,6 @@
+#ifndef AUDIO_RECORDER_H
+#define AUDIO_RECORDER_H
+
 #include "portaudio.h"
 #include <string>
 #include <vector>
@@ -70,3 +73,5 @@ public:
 
 
 };
+
+#endif
