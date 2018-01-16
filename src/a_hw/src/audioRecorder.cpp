@@ -146,7 +146,7 @@ int AudioRecorder::recordCallback(const void *inputBuffer, void *outputBuffer,
 	std::vector<int16_t>* samples = &data->recordedSamples;
 	const int16_t *rptr = (const int16_t*) inputBuffer;
 	
-	printf("callback\n");
+	
 
 	(void) outputBuffer; /*Prevent unused variable warnings */
 	(void) timeInfo;

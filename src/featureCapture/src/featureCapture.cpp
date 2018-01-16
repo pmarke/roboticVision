@@ -5,16 +5,20 @@ FeatureCapture::FeatureCapture(){
 	 // create a private node handle for use with param server
   	ros::NodeHandle nh_private("~");
 
-    dynamic_reconfigure::Server<feature_capture::cornerHarrisConfig> server;
+    
     // dynamic_reconfigure::Server<feature_capture::cornerHarrisConfig>::CallbackType f;
 
 
   	// auto func = std::bind(&VisualFrontend::callback_reconfigure, this, std::placeholders::_1, std::placeholders::_2);
 
-    auto func =std::bind(&FeatureCapture::callback,this, std::placeholders::_1, std::placeholders::_2);
+    // auto func =std::bind(&FeatureCapture::callback,this, std::placeholders::_1, std::placeholders::_2);
     // server.setCallback(func);
     
-    _img = cv::imread("/home/mark/projects/roboticVision/src/featureCapture/src/pattern.png");
+  	auto f = std::bind(&FeatureCapture::callback,this, std::placeholders::_1, std::placeholders::_2);
+  	server.setCallback(f);
+
+
+    _img = cv::imread("/home/mark/projects/roboticVision/src/featureCapture/src/house.jpeg");
     cv::cvtColor(_img,_grayImg,cv::COLOR_BGR2GRAY);
     _dst = cv::Mat::zeros(_img.size(),CV_32FC1);
      
@@ -24,7 +28,7 @@ FeatureCapture::FeatureCapture(){
     _k = 0.05;
     _borderType = cv::BORDER_DEFAULT;
 
-    namedWindow("corners_window",cv::WINDOW_AUTOSIZE);
+    // namedWindow("corners_window",cv::WINDOW_AUTOSIZE);
 
     findFeatures();
 
@@ -61,7 +65,7 @@ void FeatureCapture::findFeatures(){
 
 	
 	cv::imshow("corners_window", _imgCopy);
-	cv::waitKey(0);
+	cv::waitKey(1);
 
 }
 

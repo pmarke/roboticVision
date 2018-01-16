@@ -1,3 +1,6 @@
+#ifndef FEATURE_CAPTURE_H_
+#define FEATURE_CAPTURE_H_
+
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -31,7 +34,8 @@ private:
 	 */
 
 	int _thresh = 200;
-
+	dynamic_reconfigure::Server<feature_capture::cornerHarrisConfig> server;
+	// dynamic_reconfigure::Server<feature_capture::cornerHarrisConfig>::CallbackType f;
 
 public:
 
@@ -44,3 +48,4 @@ public:
 
 };
 
+#endif

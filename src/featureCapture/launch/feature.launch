@@ -2,4 +2,6 @@
 
 	<node pkg = "feature_capture" type="feature_node" name="feature_node" required="true" output = "screen" />
 
+	  <node pkg="rqt_reconfigure" type="rqt_reconfigure" name="dynamic_reconfigure" />
+
 </launch>
