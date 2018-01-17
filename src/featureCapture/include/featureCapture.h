@@ -24,7 +24,8 @@ private:
 
 	enum FeatureDetectionAlgorithms{
 		CORNER_HARRIS,
-		GOOD_FEATURES_TO_TRACK
+		GOOD_FEATURES_TO_TRACK,
+		FAST
 	} _featureDetectionAlgorithm;
 
 	// Corner Harris algorithm parameters
@@ -45,7 +46,7 @@ private:
 		int threshold; // If the coner harris value of a pixel is greater than threshold, display the piexl
 	} _cornerHarris;
 
-	std::vector<cv::Point2f> _corners; // vectore to hold the feature points
+	
 	struct GoodFeaturesToTrack{ // GFTT algorithm parameters
 		int maxCorners;         // Max number of corners that will be detected
 		double qualityLevel;	// Minimal accepted quality of image corners
@@ -53,8 +54,18 @@ private:
 		int blockSize;          // Neighborhood size   blockSize X blockSize (pixels)
 		bool useHarrisDetector; // Use cornerHarris() == true | cornerMinEigenVal() == false
 		double k;               // Harris detector free parameter
+		std::vector<cv::Point2f> corners; // vectore to hold the feature points
 
 	} _gftt;
+
+	cv::Ptr<cv::FastFeatureDetector> _fastDetector = cv::FastFeatureDetector::create();
+	std::vector<cv::KeyPoint> _fastKeypoints;
+	// struct FAST{
+	// 	std::vector<cv::Point2f> keypoints;  // detected features
+	// 	int threshold;                       // threshold to determine if neighboring pixels are similar, brighter, or lower in intensity than the center pixel
+	// 	bool nonmaxSupression;               // if true, non-max suppression is applied to detected corners
+	// 	int type;                            // one of three types of neighborhoods: 9_16, 7_12, 5_8
+	// } _fast;
 
 
 public:
@@ -64,6 +75,8 @@ public:
 	void callback(feature_capture::featureDetectionAlgorithmConfig &config, uint32_t level);
 	void findFeaturesCornerHarris();
 	void findFeaturesGFTT();
+	void findFeaturesFAST();
+	void imShowLoop();
 
 
 
