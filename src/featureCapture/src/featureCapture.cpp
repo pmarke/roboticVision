@@ -1,4 +1,8 @@
 #include <featureCapture.h>
+#include <thread>
+#include <mutex>
+
+std::mutex mu;
 
 FeatureCapture::FeatureCapture(){
 	
@@ -62,6 +66,18 @@ void FeatureCapture::callback(feature_capture::featureDetectionAlgorithmConfig &
 			if(init == true) findFeaturesFAST();
 			break;
 		}
+		case FeatureDetectionAlgorithms::ORB :
+			_orb->setEdgeThreshold(config.orb_edgeThreshold);
+			_orb->setFastThreshold(config.orb_fastThreshold);
+			_orb->setFirstLevel(config.orb_firstLevel);
+			_orb->setMaxFeatures(config.orb_nfeatures);
+			_orb->setNLevels(config.orb_nlevels);
+			_orb->setPatchSize(config.orb_edgeThreshold);
+			_orb->setScaleFactor(config.orb_scaleFactor);
+			_orb->setScoreType(config.orb_scoreType);
+			_orb->setWTA_K(config.orb_WTA_K);
+			if(init == true) findFeaturesORB();
+			break;
 		default:
 		{
 			printf("Error: Feature Algorithm not found.\n");
@@ -92,7 +108,7 @@ void FeatureCapture::findFeaturesCornerHarris(){
 			}
 		}
 	}
-	cv::imshow("corners_window", _imgCopy);
+	// cv::imshow("corners_window", _imgCopy);
 	cv::waitKey(30);	
 
 }
@@ -105,7 +121,7 @@ void FeatureCapture::findFeaturesGFTT(){
 	for(int i = 0; i < _gftt.corners.size(); i++){ // draw in the circles
 		cv::circle(_imgCopy, _gftt.corners[i], 5, cv::Scalar(204,102,0),2,2,0);
 	}
-	cv::imshow("corners_window", _imgCopy);
+	// cv::imshow("corners_window", _imgCopy);
 	cv::waitKey(30);
 
 }
@@ -113,27 +129,50 @@ void FeatureCapture::findFeaturesGFTT(){
 void FeatureCapture::findFeaturesFAST(){
 	_imgCopy = _img.clone();
 
-	// _fastKeypoints.clear();
+	_fastKeypoints.clear();
 	_fastDetector->detect(_grayImg,_fastKeypoints,cv::Mat());
 
 	for(int i = 0; i < _fastKeypoints.size(); i++){ // draw in the circles
 		cv::circle(_imgCopy, _fastKeypoints[i].pt, 5, cv::Scalar(204,102,0),2,2,0);
 	}
-	cv::imshow("corners_window", _imgCopy);
+	// cv::imshow("corners_window", _imgCopy);
 	cv::waitKey(30);
 
 }
 
+void FeatureCapture::findFeaturesORB(){
+
+	mu.lock();
+	_imgCopy = _img.clone();
+
+	cv::Mat hsv;
+	cv::cvtColor(_img, hsv, cv::COLOR_BGR2HSV);
+	cv::extractChannel(hsv,hsv,0);
+
+	_fastKeypoints.clear();
+
+
+	_orb->detect(hsv,_fastKeypoints,cv::Mat());
+
+	for(int i = 0; i < _fastKeypoints.size(); i++){ // draw in the circles
+		cv::circle(_imgCopy, _fastKeypoints[i].pt, 5, cv::Scalar(204,102,0),2,2,0);
+	}
+
+	mu.unlock();
+	// cv::imshow("corners_window", _imgCopy);
+	cv::imshow("hue",hsv);
+	cv::imshow("gray",_grayImg);
+	cv::waitKey(30);
+}
+
 void FeatureCapture::imShowLoop(){
 
-	while(true){
-		if(init){
 
-			cv::imshow("corners_window", _imgCopy);
-			cv::waitKey(30);
-		}
+	mu.lock();
+	cv::imshow("corners_window", _imgCopy);
+	mu.unlock();
+	cv::waitKey(30);
 
-	}
 
 
 }

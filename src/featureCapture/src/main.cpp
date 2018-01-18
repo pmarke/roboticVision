@@ -10,10 +10,16 @@ int main(int argc, char **argv){
 
 	FeatureCapture featureCapture;
 
-    ros::spin();
+    
+
+	while(ros::ok())
+	{	
+		featureCapture.imShowLoop();
+		ros::spinOnce();
+	}
+
+
     return 0;
 
 }
-
-
 

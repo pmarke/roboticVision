@@ -25,7 +25,8 @@ private:
 	enum FeatureDetectionAlgorithms{
 		CORNER_HARRIS,
 		GOOD_FEATURES_TO_TRACK,
-		FAST
+		FAST,
+		ORB
 	} _featureDetectionAlgorithm;
 
 	// Corner Harris algorithm parameters
@@ -60,12 +61,9 @@ private:
 
 	cv::Ptr<cv::FastFeatureDetector> _fastDetector = cv::FastFeatureDetector::create();
 	std::vector<cv::KeyPoint> _fastKeypoints;
-	// struct FAST{
-	// 	std::vector<cv::Point2f> keypoints;  // detected features
-	// 	int threshold;                       // threshold to determine if neighboring pixels are similar, brighter, or lower in intensity than the center pixel
-	// 	bool nonmaxSupression;               // if true, non-max suppression is applied to detected corners
-	// 	int type;                            // one of three types of neighborhoods: 9_16, 7_12, 5_8
-	// } _fast;
+
+	cv::Ptr<cv::ORB> _orb = cv::ORB::create();
+
 
 
 public:
@@ -76,6 +74,7 @@ public:
 	void findFeaturesCornerHarris();
 	void findFeaturesGFTT();
 	void findFeaturesFAST();
+	void findFeaturesORB();
 	void imShowLoop();
 
 
